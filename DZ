@@ -1,0 +1,153 @@
+1.
+#include <iostream>
+#include <iomanip>
+#include <cstring>
+using namespace std;
+
+// Вывод динамического массива
+void print(int** katalog, int stroki, int stolbci) {
+    cout << "Array of arrays (" << stroki << " x " << stolbci << "):" << endl;
+    for (int i = 0; i < stroki; i++) {
+        for (int j = 0; j < stolbci; j++)
+            cout << setw(3) << katalog[i][j] << " ";
+        cout << endl;
+    }
+}
+
+// Вставка строки
+void add_stroki(int**& katalog, int& stroki, int stolbci, int pos) {
+    katalog = (int**)realloc(katalog, sizeof(int*) * (++stroki));
+    memmove(katalog + pos + 1, katalog + pos, sizeof(int*) * (stroki - pos));
+    katalog[pos] = (int*)calloc(stolbci, sizeof(int));
+}
+
+int main() {
+    // А теперь сделаем этот список массивов динамическим, его адрес поместим в указатель.
+    // Указатель на первый элемент массива, в котором элементами являются указатели.
+    // То есть, указатель на указатель.
+    int** massiv_massivov; // указатель на int*
+    int row_count = 5;
+    int column_count = 10;
+    // Создаем массив из пяти указателей
+    // Пять указателей на int, то есть пять int*, пока они ни на что не указывают
+    massiv_massivov = (int**)malloc(sizeof(int*) * row_count);
+    // Создадим пять динамических массивов, в каждом по 10 чисел
+    for (int i = 0; i < row_count; i++) massiv_massivov[i] = (int*)malloc(sizeof(int) * 10);
+    // работаем как с обычным двумерным массивом 5 x 10
+    // заполняем
+    int val = 123;
+    for (int i = 0; i < row_count; i++) {
+        for (int j = 0; j < column_count; j++) {
+            massiv_massivov[i][j] = val;
+            val++;
+        }
+    }
+    // выводим
+    print(massiv_massivov, row_count, column_count);
+    // вставляем в позицию 2, отсчет от нуля
+    add_stroki(massiv_massivov, row_count, column_count, 2);
+    print(massiv_massivov, row_count, column_count);
+    // освобождаем память
+    // Сначала удаляем 6 массивов, потом удаляем массив, в котором лежали их адреса.
+    for (int i = 0; i < row_count; i++) free(massiv_massivov[i]);
+    free(massiv_massivov);
+}
+
+
+
+2. #include <iostream>
+#include <cstdlib>
+#include <ctime>
+using namespace std;
+
+void deleteRow(int** matr, int& n, int m, int row)
+{
+	int** tmp = new int* [n - 1];
+	for (int i = 0; i < n - 1; i++)
+		tmp[i] = new int[m];
+
+	for (int i = row; i < n - 1; i++)
+		for (int j = 0; j < n; j++)
+			matr[i][j] = matr[i + 1][j];
+
+	for (int i = 0; i < n - 1; i++)
+		for (int j = 0; j < n; j++)
+			tmp[i][j] = matr[i][j];
+
+	matr = tmp;
+	n--;
+	for (int i = 0; i < n - 1; i++)
+		delete[]tmp[i];
+	delete[]tmp;
+}
+
+void Print(int** a, int n, int m)
+{
+	for (int i = 0; i < n; i++)
+	{
+		for (int j = 0; j < m; j++)
+			cout << a[i][j] << " ";
+		cout << "\n";
+	}
+}
+
+int main()
+{
+	srand((int)time(0));
+	int n, m, row;
+	cout << "n="; cin >> n;
+	cout << "m="; cin >> m;
+	cout << "index row="; cin >> row;
+
+	int** matr = new int* [n];
+	for (int i = 0; i < n; i++)
+		matr[i] = new int[m];
+
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			matr[i][j] = rand() % 9 + 1;
+
+	Print(matr, n, m);
+	cout << "\n";
+	deleteRow(matr, n, m, row);
+	Print(matr, n, m);
+
+	for (int i = 0; i < n; i++)
+		delete[]matr[i];
+	delete[]matr;
+	system("pause");
+	return 0;
+}
+
+3.
+
+#include <iostream>
+#include <time.h>
+using namespace std;
+
+void Proverka(int** M, int n, int m) {
+    int shitalka = 0;
+    for (int i = 0; i < n; ++i) {
+        if (M[i][0] > 0) {
+            shitalka++;
+        }
+    }
+
+    if (shitalka == n) {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 1; j < m; ++j) {
+                cout << M[i][j] << ' ';
+            }
+            cout << "\n";
+        }
+    }
+    else {
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < m; ++j) {
+                cout << M[i][j] << ' ';
+            }
+            cout << "\n";
+        }
+        cout << "\n";
+    }
+}
